@@ -18,9 +18,9 @@
 # please make sure that you run this in its own directory as to not risk overriding important files
 
 
-RANCHER_HOST='' # your rancher hostname -> no https or '/'s needed - example: rancher.mycluster.com
-ACCESS_TOKEN='' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
-ROLE='' # this should be role you created that you want your users added to.
+RANCHER_HOST='rancher.cattlefarm.lan' # your rancher hostname -> no https or '/'s needed - example: rancher.mycluster.com
+ACCESS_TOKEN='token-pmfkt:c55lwr8p8z84bkw7bjt67dp6wfdjbrm8z4wq5j72qfgcnndqbpdddh' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
+ROLE='restricted-admin' # this should be role you created that you want your users added to.
 MANIFEST_FILE=dsuserconfig.yaml
 
 # nuke existing dsuserconfig
@@ -52,5 +52,12 @@ PAYLOAD_STRING=$(awk '{printf "%s\\n", $0}' $MANIFEST_FILE | sed 's/^/{"yaml": "
 # Get a list of all not local clusters hosted by Rancher
 kubectl get clusters.management.cattle.io --no-headers | cut -d ' ' -f1 | grep -v local | while read clusters; do
   # Post to the Rancher API with the dsuserconfig.yaml
-  curl -k -X POST -u $ACCESS_TOKEN -d "$PAYLOAD_STRING" https://$RANCHER_HOST/v1/management.cattle.io.clusters/$clusters?action=apply
+  create_rbac="curl -k -X POST -u $ACCESS_TOKEN -d '$PAYLOAD_STRING' https://$RANCHER_HOST/v1/management.cattle.io.clusters/$clusters?action=apply"
+  if [ "$1" == "-a" ]
+  then
+    echo "running: $create_rbac"
+    bash -c "$create_rbac"
+  else
+    echo "staged curl command: $create_rbac"
+  fi;
 done;
