@@ -18,9 +18,9 @@
 # please make sure that you run this in its own directory as to not risk overriding important files
 
 
-RANCHER_HOST='rancher.cattlefarm.lan' # your rancher hostname -> no https or '/'s needed - example: rancher.mycluster.com
-ACCESS_TOKEN='token-pmfkt:c55lwr8p8z84bkw7bjt67dp6wfdjbrm8z4wq5j72qfgcnndqbpdddh' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
-ROLE='restricted-admin' # this should be role you created that you want your users added to.
+RANCHER_HOST='' # your rancher hostname -> no https or '/'s needed - example: rancher.mycluster.com
+ACCESS_TOKEN='' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
+ROLE='' # this should be role you created that you want your users added to.
 MANIFEST_FILE=dsuserconfig.yaml
 
 # nuke existing dsuserconfig
