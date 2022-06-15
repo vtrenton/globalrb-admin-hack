@@ -1,30 +1,13 @@
 #!/bin/bash
 
-# Before Running:
-#
-# Make sure your kubeconfig is pointing to the Rancher cluster
-# use kubectl get nodes to validate
-# this script will crash and burn in a horrible way if you do not
-#
-# make sure you are running this on a Linux Machine
-# sed and awk work different on Mac and Linux
-#
-# make sure the Linux host has the following programs installed:
-# bash <- comes by default in most Linux systems
-# curl <- might need to be installed
-# kubectl <- a lot of this relies on kubectl
-#
-# Lastly, this will create and delete files
-# please make sure that you run this in its own directory as to not risk overriding important files
-
-
 RANCHER_HOST='' # your rancher hostname -> no https or '/'s needed - example: rancher.mycluster.com
 ACCESS_TOKEN='' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
 ROLE='' # this should be role you created that you want your users added to.
 MANIFEST_FILE=dsuserconfig.yaml
+CLEAN_UP=[ -f $MANIFEST_FILE ] && rm $MANIFEST_FILE
 
-# nuke existing dsuserconfig
-[ -f $MANIFEST_FILE ] && rm $MANIFEST_FILE
+# run inital clean of artifacts
+bash -c "$CLEAN_UP"
 
 # create the user crb config for downstream cluster
 kubectl get globalrolebinding -o jsonpath='{range .items[*]}{@.userName}{" "}{@.globalRoleName}{"\n"}{end}' | grep -i $ROLE | cut -d ' ' -f1 | while read name; do 
@@ -55,9 +38,13 @@ kubectl get clusters.management.cattle.io --no-headers | cut -d ' ' -f1 | grep -
   create_rbac="curl -k -X POST -u $ACCESS_TOKEN -d '$PAYLOAD_STRING' https://$RANCHER_HOST/v1/management.cattle.io.clusters/$clusters?action=apply"
   if [ "$1" == "-a" ]
   then
+    # run the script
     echo "running: $create_rbac"
     bash -c "$create_rbac"
+    # artifact cleanup
+    bash -c "$CLEAN_UP"
   else
     echo "staged curl command: $create_rbac"
   fi;
 done;
+
