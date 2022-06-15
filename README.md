@@ -1,6 +1,4 @@
-# globalrb-admin-hack
-
-# Before Running:
+# Before Running
 
 Make sure your kubeconfig is pointing to the Rancher cluster
 use kubectl get nodes to validate
@@ -10,9 +8,9 @@ make sure you are running this on a Linux Machine
 sed and awk work different on Mac and Linux
 
 make sure the Linux host has the following programs installed:
-bash <- comes by default in most Linux systems
-curl <- might need to be installed
-kubectl <- a lot of this relies on kubectl
+- bash <- comes by default in most Linux systems
+- curl <- might need to be installed
+- kubectl <- a lot of this relies on kubectl
 
 Lastly, this will create and delete files
 please make sure that you run this in its own directory as to not risk overriding important files
