@@ -30,7 +30,7 @@ subjects:
 EOF
 done;
 # format yaml for post request
-PAYLOAD_STRING=$(awk '{printf "%s\\n", $0}' $MANIFEST_FILE | sed 's/^/{"yaml": "/g;s/$/"}/g');
+PAYLOAD_STRING=$(awk '{printf "%s\\n", $0}' $MANIFEST_FILE | sed 's/^/{"yaml": "/;s/$/"}/');
 
 # Get a list of all not local clusters hosted by Rancher
 kubectl get clusters.management.cattle.io --no-headers | cut -d ' ' -f1 | grep -v local | while read clusters; do
