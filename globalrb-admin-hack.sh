@@ -42,11 +42,11 @@ EOF
       # run the script
       echo "running: $create_rbac"
       bash -c "$create_rbac"
-      # artifact cleanup
-      bash -c "$CLEAN_UP"
     else
       echo "staged curl command: $create_rbac"
     fi;
   done;
 done;
+# artifact cleanup
+bash -c "$CLEAN_UP"
 
