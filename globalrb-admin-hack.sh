@@ -4,13 +4,13 @@ RANCHER_HOST='' # your rancher hostname -> no https or '/'s needed - example: ra
 ACCESS_TOKEN='' # API token generated from the UI -> from the rancher homepage click on the top right hand corner and Select "Account & API Keys" to generate one
 ROLE='' # this should be role you created that you want your users added to.
 MANIFEST_FILE=dsuserconfig.yaml
-CLEAN_UP=[ -f $MANIFEST_FILE ] && rm $MANIFEST_FILE
+CLEAN_UP="[ -f $MANIFEST_FILE ] && rm $MANIFEST_FILE"
 
 # run inital clean of artifacts
 bash -c "$CLEAN_UP"
 
 # create the user crb config for downstream cluster
-kubectl get globalrolebinding -o jsonpath='{range .items[*]}{@.userName}{" "}{@.globalRoleName}{"\n"}{end}' | grep -i $ROLE | cut -d ' ' -f1 | while read name; do 
+kubectl get globalrolebinding -o jsonpath='{range .items[*]}{@.userName}{" "}{@.globalRoleName}{"\n"}{end}' | awk "/$ROLE/ {print \$1}" | while read name; do 
 cat <<EOF >> $MANIFEST_FILE 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
