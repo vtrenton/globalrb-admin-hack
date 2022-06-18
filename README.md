@@ -1,3 +1,7 @@
+# Please use v2 script
+
+globalrb-admin-hack.sh was made before I was aware of clusterroletemplatebindings. V1 is absolutely the more 'manaul way of what can already be accomplished by the API. for this reason it's a lot cleaner to both read and maintain.
+
 # Before Running
 
 Make sure your kubeconfig is pointing to the Rancher cluster
