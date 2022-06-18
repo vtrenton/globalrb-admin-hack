@@ -2,7 +2,7 @@
 
 ROLE=''
 
-kubectl get globalrolebinding -o jsonpath='{range .items[*]}{@.userName}{" "}{@.globalRoleName}{"\n"}{end}' | awk "/$ROLE/ {print \$1}" | while read user; do
+kubectl get globalrolebindings.management.cattle.io -o jsonpath='{range .items[*]}{@.userName}{" "}{@.globalRoleName}{"\n"}{end}' | awk "/$ROLE/ {print \$1}" | while read user; do
   kubectl get clusters.management.cattle.io --no-headers | cut -d ' ' -f1 | grep -v local | while read cluster; do
     read -r -d '' MANIFEST <<-EOF
 	apiVersion: management.cattle.io/v3
