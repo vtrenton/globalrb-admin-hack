@@ -7,9 +7,9 @@ RANCHER_HOST=''
 BEARER_TOKEN=''
 ROLE=''
 
-curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/globalrolebindings | jq -r --args ROLE "$ROLE" '.data[] | select(.name==$ROLE) | .userId' | while read user; do
+curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/globalrolebindings | jq -r --arg ROLE "$ROLE" '.data[] | select(.globalRoleId==$ROLE) | .userId' | while read user; do
   curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/clusters | jq '[.[] ] | .[8][] | select(.id != "local") | .id' | while read cluster; do
-    if ! curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/clusterroletemplatebindings | jq -re --args user $user '.data[] | select(.name=="$user-admin")' >/dev/null; then
+    if ! curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/clusterroletemplatebindings | jq -re --arg user $user '.data[] | select(.name=="$user-admin")' >/dev/null; then
       PAYLOAD="{\"yaml\": \"apiVersion: management.cattle.io/v3\nclusterName: $cluster\nkind: ClusterRoleTemplateBinding\nmetadata:\n  name: $user-admin\n  namespace: $cluster\nroleTemplateName: cluster-owner\nuserName: $user\"}";
       if [ "$1" == "-a" ]; then
         # upload payload
