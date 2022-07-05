@@ -14,7 +14,7 @@ curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/glo
       if [ "$1" == "-a" ]; then
         # upload payload
 	echo SENDING: $PAYLOAD
-	curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" -X POST -d $PAYLOAD https://$RANCHER_HOST/v1/management.cattle.io.clusters/$clusters?action=apply
+	curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" -X POST -d $PAYLOAD https://$RANCHER_HOST/v1/management.cattle.io.clusters/local?action=apply
       else
         echo "The PAYLOAD to send is: $PAYLOAD"
 	echo "Use -a flag to send"
