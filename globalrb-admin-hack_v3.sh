@@ -3,14 +3,14 @@
 # This script requires curl and jq to run
 # This leverages the Rancher API Directly
 
-RANCHER_HOST=''
-BEARER_TOKEN=''
-ROLE=''
+RANCHER_HOST='rancher.cattlefarm.lan'
+BEARER_TOKEN='token-d2852:fwqzpdvsxp9f5mv965v6h9snvkr2z78hm9rsh28p4mqvqsg44gm2lf'
+ROLE='admin-override'
 
 #curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/globalrolebindings | jq -r --arg ROLE "$ROLE" '.data[] | select(.globalRoleId==$ROLE) | .userId' | while read user; do
-curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/globalrolebindings?globalRoleId=$ROLE | jq '.data[].userId' | while read user; do
+curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/globalrolebindings?globalRoleId=$ROLE | jq -r '.data[].userId' | while read user; do
   #curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/clusters | jq '[.[] ] | .[8][] | select(.id != "local") | .id' | while read cluster; do
-  curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/clusterroletemplatebindings | jq '.data[] | select(.id != "local") | .id' | while read cluster; do
+  curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/clusters | jq '.data[] | select(.id != "local") | .id' | while read cluster; do
     #if ! curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/clusterroletemplatebindings | jq -re --arg user $user '.data[] | select(.name=="$user-admin")' >/dev/null; then
     if ! curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/clusterroletemplatebindings?name=$user-admin | jq '.data[]' >/dev/null; then
       PAYLOAD="{\"yaml\": \"apiVersion: management.cattle.io/v3\nclusterName: $cluster\nkind: ClusterRoleTemplateBinding\nmetadata:\n  name: $user-admin\n  namespace: $cluster\nroleTemplateName: cluster-owner\nuserName: $user\"}";
