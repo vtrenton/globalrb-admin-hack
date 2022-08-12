@@ -3,9 +3,9 @@
 # This script requires curl and jq to run
 # This leverages the Rancher API Directly
 
-RANCHER_HOST='rancher.cattlefarm.lan'
-BEARER_TOKEN='token-d2852:fwqzpdvsxp9f5mv965v6h9snvkr2z78hm9rsh28p4mqvqsg44gm2lf'
-ROLE='admin-override'
+RANCHER_HOST=''
+BEARER_TOKEN=''
+ROLE=''
 
 #curl -s -k -H "Authorization: Bearer $BEARER_TOKEN" https://$RANCHER_HOST/v3/globalrolebindings | jq -r --arg ROLE "$ROLE" '.data[] | select(.globalRoleId==$ROLE) | .userId' | while read user; do
 curl -sk -u $BEARER_TOKEN https://$RANCHER_HOST/v3/globalrolebindings?globalRoleId=$ROLE | jq -r '.data[].userId' | while read user; do
